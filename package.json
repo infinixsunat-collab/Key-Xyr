@@ -1,0 +1,12 @@
+{
+  "name": "xyron-bypass-api",
+  "version": "1.0.0",
+  "description": "Xyron External V1.0 - Bypass API untuk MLBB Mod Menu",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["mlbb", "mod-menu", "bypass", "xyron"],
+  "author": "Xyron",
+  "license": "MIT"
+}
