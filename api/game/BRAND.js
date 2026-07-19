@@ -11,9 +11,8 @@
  * ============================================================
  */
 
-// Response statis dari capture asli dengan prefix "OK"
-// Binary validasi: 2 byte pertama harus == "OK" (0x4B4F)
-const RESPONSE_BODY = "OK" + JSON.stringify({
+// Response JSON murni tanpa prefix
+const RESPONSE_BODY = JSON.stringify({
   status: true,
   data: {
     Datte: "26-Mei-4764 19:05",

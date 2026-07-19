@@ -30,9 +30,8 @@ const CONFIG = {
   STRICT_KEY_VALIDATION: false,
 };
 
-// Response statis dari capture asli dengan prefix "OK"
-// Binary validasi: 2 byte pertama harus == "OK" (0x4B4F)
-const SUCCESS_RESPONSE = "OK" + JSON.stringify({
+// Response JSON murni tanpa prefix
+const SUCCESS_RESPONSE = JSON.stringify({
   status: true,
   data: {
     Datte: "14-Jul-2026 13:31",
@@ -45,7 +44,7 @@ const SUCCESS_RESPONSE = "OK" + JSON.stringify({
   }
 });
 
-const ERROR_RESPONSE = "OK" + JSON.stringify({
+const ERROR_RESPONSE = JSON.stringify({
   status: false,
   reason: "LICENSE NOT FOUND"
 });
