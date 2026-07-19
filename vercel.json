@@ -1,44 +1,20 @@
 {
   "version": 2,
-  "name": "xyron-bypass-api",
+  "name": "key-xyr-api",
   "builds": [
     {
-      "src": "api/game/BRAND.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/game/MLBB.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/content.js",
+      "src": "api/games/mobile-legends.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/game/BRAND",
-      "dest": "/api/game/BRAND.js"
-    },
-    {
-      "src": "/api/game/MLBB",
-      "dest": "/api/game/MLBB.js"
-    },
-    {
-      "src": "/api/content",
-      "dest": "/api/content.js"
-    },
-    {
-      "src": "/api/game/(.*)",
-      "dest": "/api/game/MLBB.js"
+      "src": "/api/games/mobile-legends",
+      "dest": "/api/games/mobile-legends.js"
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/content.js"
-    },
-    {
-      "src": "/",
-      "dest": "/api/game/BRAND.js"
+      "dest": "/api/games/mobile-legends.js"
     }
   ]
 }

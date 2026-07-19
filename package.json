@@ -1,12 +1,12 @@
 {
-  "name": "xyron-bypass-api",
+  "name": "key-xyr-api",
   "version": "1.0.0",
-  "description": "Xyron External V1.0 - Bypass API untuk MLBB Mod Menu",
+  "description": "Game authentication bypass API - Vercel Serverless",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod"
   },
-  "keywords": ["mlbb", "mod-menu", "bypass", "xyron"],
-  "author": "Xyron",
+  "keywords": ["mlbb", "game-bypass", "vercel"],
+  "author": "",
   "license": "MIT"
 }
