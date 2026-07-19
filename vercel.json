@@ -1,5 +1,44 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" }
+  "version": 2,
+  "name": "xyron-bypass-api",
+  "builds": [
+    {
+      "src": "api/game/BRAND.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/game/MLBB.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/content.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/game/BRAND",
+      "dest": "/api/game/BRAND.js"
+    },
+    {
+      "src": "/api/game/MLBB",
+      "dest": "/api/game/MLBB.js"
+    },
+    {
+      "src": "/api/content",
+      "dest": "/api/content.js"
+    },
+    {
+      "src": "/api/game/(.*)",
+      "dest": "/api/game/MLBB.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/content.js"
+    },
+    {
+      "src": "/",
+      "dest": "/api/game/BRAND.js"
+    }
   ]
 }
