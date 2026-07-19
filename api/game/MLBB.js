@@ -40,7 +40,7 @@ const SUCCESS_RESPONSE = JSON.stringify({
     tittle: "By Mr X",
     versi: "1.2",
     instance: "Instance",
-    expired: "Unlimited"
+    expired: "2 Hari 11 Jam"
   }
 });
 
