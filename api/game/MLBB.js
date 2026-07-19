@@ -12,25 +12,6 @@ const CONFIG = {
   STRICT_KEY_VALIDATION: false,
 };
 
-const SUCCESS_RESPONSE = JSON.stringify({
-  status: true,
-  data: {
-    Datte: "14-Jul-2026 13:31",
-    token: "21ff301c0e142b9c0ba6270300401150",
-    rng: 1783795624,
-    tittle: "By Mr X",
-    versi: "1.2",
-    instance: "Instance",
-    expired: "2 Hari 11 Jam"
-  }
-});
-
-const ERROR_RESPONSE = JSON.stringify({
-  status: false,
-  reason: "LICENSE NOT FOUND"
-});
-
-// Headers untuk semua response
 function getHeaders() {
   const h = new Headers();
   h.set('Content-Type', 'application/json');
@@ -81,19 +62,44 @@ export default async function handler(req) {
       (CONFIG.STRICT_KEY_VALIDATION ? VALID_KEYS.includes(userKey) : true);
 
     if (!keyValid) {
-      return new Response(ERROR_RESPONSE, {
+      return new Response(JSON.stringify({
+        status: false,
+        reason: "LICENSE NOT FOUND"
+      }), {
         status: 404,
         headers: getHeaders()
       });
     }
 
-    return new Response(SUCCESS_RESPONSE, {
+    // Generate dynamic token & rng per request
+    const rng = Math.floor(Date.now() / 1000);
+    const token = Array.from({ length: 32 }, () =>
+      Math.floor(Math.random() * 16).toString(16)
+    ).join('');
+
+    const successResponse = JSON.stringify({
+      status: true,
+      data: {
+        Datte: "14-Jul-2026 13:31",
+        token: token,
+        rng: rng,
+        tittle: "By Mr X",
+        versi: "1.2",
+        instance: "Instance",
+        expired: "2 Hari 11 Jam"
+      }
+    });
+
+    return new Response(successResponse, {
       status: 200,
       headers: getHeaders()
     });
 
   } catch (error) {
-    return new Response(ERROR_RESPONSE, {
+    return new Response(JSON.stringify({
+      status: false,
+      reason: "SERVER ERROR"
+    }), {
       status: 500,
       headers: getHeaders()
     });

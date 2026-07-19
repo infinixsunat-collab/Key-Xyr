@@ -14,13 +14,19 @@ export default async function handler(req) {
     });
   }
 
+  // Generate dynamic token & rng per request
+  const rng = Math.floor(Date.now() / 1000);
+  const token = Array.from({ length: 32 }, () =>
+    Math.floor(Math.random() * 16).toString(16)
+  ).join('');
+
   // Response JSON murni
   const body = JSON.stringify({
     status: true,
     data: {
       Datte: "26-Mei-4764 19:05",
-      token: "d2516b5312627306f403d691ddb17898",
-      rng: 1784219806,
+      token: token,
+      rng: rng,
       tittle: "BEST MOD EVER",
       versi: "1.2",
       instance: "Instance",
@@ -28,7 +34,7 @@ export default async function handler(req) {
     }
   });
 
-  // Headers - HAPUS semua header Vercel
+  // Headers
   const headers = new Headers();
   headers.set('Content-Type', 'application/json');
   headers.set('X-Powered-By', 'PHP/8.3.30');
@@ -39,7 +45,6 @@ export default async function handler(req) {
   headers.set('Content-Security-Policy', 'upgrade-insecure-requests');
   headers.set('Server', 'cloudflare');
   headers.set('X-Turbo-Charged-By', 'LiteSpeed');
-  // JANGAN set: strict-transport-security, x-vercel-cache, x-vercel-id
 
   return new Response(body, {
     status: 200,
