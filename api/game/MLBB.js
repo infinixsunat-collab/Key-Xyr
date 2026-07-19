@@ -1,21 +1,6 @@
-/**
- * ============================================================
- *  XYRON BYPASS API - MLBB Endpoint
- * ============================================================
- *  
- *  Endpoint: /api/game/MLBB
- *  Fungsi: Login Verification (buka fitur mod)
- *  
- *  Response sesuai HttpCanary capture:
- *    - Valid: status:true + data
- *    - Invalid: status:false + reason:"LICENSE NOT FOUND"
- *  
- * ============================================================
- */
+// Force Edge Runtime for full header control
+export const config = { runtime: 'edge' };
 
-// ============================================================
-//  ⚠️  VALID KEYS - GANTI DENGAN KEY KAMU SENDIRI!
-// ============================================================
 const VALID_KEYS = [
   'Xyron-Trial-Key',
   'XYRON-VIP-001',
@@ -23,14 +8,10 @@ const VALID_KEYS = [
   'Mr-X-KEY-001',
 ];
 
-// ============================================================
-//  KONFIGURASI
-// ============================================================
 const CONFIG = {
   STRICT_KEY_VALIDATION: false,
 };
 
-// Response JSON murni tanpa prefix
 const SUCCESS_RESPONSE = JSON.stringify({
   status: true,
   data: {
@@ -49,85 +30,72 @@ const ERROR_RESPONSE = JSON.stringify({
   reason: "LICENSE NOT FOUND"
 });
 
-// Parse form-urlencoded body
-function parseBody(body) {
-  const params = {};
-  if (body) {
-    body.split('&').forEach(p => {
-      const [key, ...valueParts] = p.split('=');
-      if (key) {
-        params[key.trim()] = decodeURIComponent(valueParts.join('=') || '');
+// Headers untuk semua response
+function getHeaders() {
+  const h = new Headers();
+  h.set('Content-Type', 'application/json');
+  h.set('X-Powered-By', 'PHP/8.3.30');
+  h.set('Cache-Control', 'no-cache, private');
+  h.set('Access-Control-Allow-Origin', '*');
+  h.set('Platform', 'hostinger');
+  h.set('Panel', 'hpanel');
+  h.set('Content-Security-Policy', 'upgrade-insecure-requests');
+  h.set('Server', 'cloudflare');
+  h.set('X-Turbo-Charged-By', 'LiteSpeed');
+  return h;
+}
+
+export default async function handler(req) {
+  // Handle OPTIONS
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, User-Agent',
       }
     });
-  }
-  return params;
-}
-
-// Set headers seperti original server
-function setOriginalHeaders(res) {
-  res.removeHeader('x-vercel-id');
-  res.removeHeader('x-vercel-cache');
-  res.removeHeader('x-vercel-ttl');
-  
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('X-Powered-By', 'PHP/8.3.30');
-  res.setHeader('Cache-Control', 'no-cache, private');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Platform', 'hostinger');
-  res.setHeader('Panel', 'hpanel');
-  res.setHeader('Content-Security-Policy', 'upgrade-insecure-requests');
-  res.setHeader('Server', 'cloudflare');
-  res.setHeader('X-Turbo-Charged-By', 'LiteSpeed');
-}
-
-export default async function handler(req, res) {
-  // Handle OPTIONS (preflight)
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, User-Agent');
-    return res.status(200).end();
   }
 
   try {
     // Get body
     let body = '';
-    if (req.method === 'POST' && req.body) {
-      body = typeof req.body === 'string' 
-        ? req.body 
-        : new URLSearchParams(req.body).toString();
-    } else if (req.url && req.url.includes('?')) {
-      body = req.url.split('?')[1];
+    if (req.method === 'POST') {
+      body = await req.text();
     }
 
     // Parse parameters
-    const params = parseBody(body);
-    const userKey = params.user_key || '';
-    const serial = params.serial || '';
+    const params = {};
+    if (body) {
+      body.split('&').forEach(p => {
+        const [key, ...valueParts] = p.split('=');
+        if (key) params[key.trim()] = decodeURIComponent(valueParts.join('=') || '');
+      });
+    }
 
-    console.log(`[${new Date().toISOString()}] MLBB request - Key: ${userKey || '(empty)'}`);
+    const userKey = params.user_key || '';
 
     // Validasi key
     const keyValid = userKey && userKey.trim() !== '' && 
       (CONFIG.STRICT_KEY_VALIDATION ? VALID_KEYS.includes(userKey) : true);
 
     if (!keyValid) {
-      console.log('  → ❌ Key kosong - ditolak');
-      setOriginalHeaders(res);
-      return res.status(404).end(ERROR_RESPONSE);
+      return new Response(ERROR_RESPONSE, {
+        status: 404,
+        headers: getHeaders()
+      });
     }
 
-    console.log(`  → ✅ Key diterima: ${userKey}`);
-
-    // Set headers
-    setOriginalHeaders(res);
-
-    // Send response as RAW STRING
-    return res.status(200).end(SUCCESS_RESPONSE);
+    return new Response(SUCCESS_RESPONSE, {
+      status: 200,
+      headers: getHeaders()
+    });
 
   } catch (error) {
-    console.error('Error:', error);
-    setOriginalHeaders(res);
-    return res.status(500).end(ERROR_RESPONSE);
+    return new Response(ERROR_RESPONSE, {
+      status: 500,
+      headers: getHeaders()
+    });
   }
 }
