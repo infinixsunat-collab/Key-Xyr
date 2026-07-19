@@ -14,11 +14,9 @@ export default async function handler(req) {
     });
   }
 
-  // Generate dynamic token & rng per request
+  // TEST: Token nol untuk cek apakah binary validate token
   const rng = Math.floor(Date.now() / 1000);
-  const token = Array.from({ length: 32 }, () =>
-    Math.floor(Math.random() * 16).toString(16)
-  ).join('');
+  const token = '00000000000000000000000000000000';
 
   // Response JSON murni
   const body = JSON.stringify({
